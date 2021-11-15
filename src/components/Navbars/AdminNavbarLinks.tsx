@@ -27,9 +27,11 @@ import { SidebarResponsive } from "components/Sidebar/Sidebar";
 import PropTypes from "prop-types";
 import React from "react";
 import { NavLink } from "react-router-dom";
-import routes from "routes.js";
+import routes from "routes";
+import useSWR from "swr";
+import { axiosFetcher } from "utils/apiFetcher";
 
-export default function HeaderLinks(props) {
+export default function HeaderLinks(props: any) {
   const { variant, children, fixed, secondary, onOpen, ...rest } = props;
 
   // Chakra Color Mode
@@ -44,6 +46,8 @@ export default function HeaderLinks(props) {
     mainText = "white";
   }
   const settingsRef = React.useRef();
+  const { data, error, } = useSWR('admin/settings', (url) => axiosFetcher.get(url))
+
   return (
     <Flex
       pe={{ sm: "0px", md: "16px" }}
@@ -69,9 +73,10 @@ export default function HeaderLinks(props) {
       >
         <InputLeftElement>
           <IconButton
+            aria-label="search"
             bg="inherit"
             borderRadius="inherit"
-            _hover="none"
+            _hover={{ display: "none" }}
             _active={{
               bg: "inherit",
               transform: "none",
@@ -91,7 +96,7 @@ export default function HeaderLinks(props) {
           borderRadius="inherit"
         />
       </InputGroup>
-      <NavLink to="/auth/signin">
+      {error && <NavLink to="/auth/signin">
         <Button
           ms="0px"
           px="0px"
@@ -100,7 +105,7 @@ export default function HeaderLinks(props) {
           variant="transparent-with-icon"
           rightIcon={
             document.documentElement.dir ? (
-              ""
+              <></>
             ) : (
               <ProfileIcon color={navbarIcon} w="22px" h="22px" me="0px" />
             )
@@ -109,13 +114,13 @@ export default function HeaderLinks(props) {
             document.documentElement.dir ? (
               <ProfileIcon color={navbarIcon} w="22px" h="22px" me="0px" />
             ) : (
-              ""
+              <></>
             )
           }
         >
           <Text display={{ sm: "none", md: "flex" }}>Sign In</Text>
         </Button>
-      </NavLink>
+      </NavLink>}
       <SidebarResponsive
         logoText={props.logoText}
         secondary={props.secondary}
@@ -127,7 +132,7 @@ export default function HeaderLinks(props) {
         cursor="pointer"
         ms={{ base: "16px", xl: "0px" }}
         me="16px"
-        ref={settingsRef}
+        ref={() => settingsRef}
         onClick={props.onOpen}
         color={navbarIcon}
         w="18px"

@@ -1,5 +1,5 @@
 // Chakra imports
-import { ChakraProvider, Portal, useDisclosure } from "@chakra-ui/react";
+import { Portal, useDisclosure } from "@chakra-ui/react";
 import { RtlProvider } from "components/RTLProvider/RTLProvider";
 import Configurator from "components/Configurator/Configurator";
 import Footer from "components/Footer/Footer.js";
@@ -8,9 +8,9 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import React, { useState } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import routes from "routes.js";
+import routes from "routes";
 // Custom Chakra theme
-import theme from "theme/theme.js";
+import theme from "theme/theme";
 import FixedPlugin from "../components/FixedPlugin/FixedPlugin";
 // Custom components
 import MainPanel from "../components/Layout/MainPanel";
@@ -95,7 +95,7 @@ export default function Dashboard(props) {
   document.documentElement.dir = "rtl";
   // Chakra Color Mode
   return (
-    <ChakraProvider theme={theme} resetCss={false}>
+    <>
       <RtlProvider>
         <Sidebar
           routes={routes}
@@ -153,6 +153,6 @@ export default function Dashboard(props) {
           />
         </MainPanel>
       </RtlProvider>
-    </ChakraProvider>
+    </>
   );
 }

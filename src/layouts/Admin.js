@@ -7,9 +7,8 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import React, { useState } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import routes from "routes.js";
+import routes from "routes";
 // Custom Chakra theme
-import theme from "theme/theme.js";
 import FixedPlugin from "../components/FixedPlugin/FixedPlugin";
 // Custom components
 import MainPanel from "../components/Layout/MainPanel";
@@ -100,7 +99,7 @@ export default function Dashboard(props) {
 
 
   return (
-    <ChakraProvider theme={theme} resetCss={false}>
+    <>
       <Sidebar
         routes={routes}
         logoText={"PURITY UI DASHBOARD"}
@@ -157,6 +156,6 @@ export default function Dashboard(props) {
           onTransparent={() => setSidebarVariant("transparent")}
         />
       </MainPanel>
-    </ChakraProvider>
+    </>
   );
 }

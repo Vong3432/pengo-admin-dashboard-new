@@ -21,7 +21,7 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { FaTwitter, FaFacebook } from "react-icons/fa";
 
-export default function Configurator(props) {
+export default function Configurator(props: any) {
   const { secondary, isOpen, onClose, fixed, ...rest } = props;
   const [switched, setSwitched] = useState(props.isChecked);
 
@@ -47,7 +47,7 @@ export default function Configurator(props) {
         isOpen={props.isOpen}
         onClose={props.onClose}
         placement={document.documentElement.dir === "rtl" ? "left" : "right"}
-        finalFocusRef={settingsRef}
+        // finalFocusRef={() => settingsRef.current}
         blockScrollOnMount={false}
       >
         <DrawerContent>
@@ -90,7 +90,7 @@ export default function Configurator(props) {
                     w="50%"
                     p="8px 32px"
                     mb={5}
-                    _hover="teal.300"
+                    _hover={{ color: 'teal.300' }}
                     color="white"
                     fontSize="xs"
                     onClick={props.onOpaque}

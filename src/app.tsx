@@ -1,5 +1,5 @@
 import React from 'react'
-import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
+import { HashRouter, Route, Switch, Redirect, useHistory } from "react-router-dom";
 
 import AuthLayout from "layouts/Auth.js";
 import AdminLayout from "layouts/Admin.js";
@@ -11,25 +11,7 @@ import theme from 'theme/theme';
 
 const App = () => {
     return (
-        <ChakraProvider theme={theme} resetCSS={false}>
-            <AppContent />
-        </ChakraProvider>
-    )
-}
-
-const AppContent = () => {
-    const toast = useToast()
-    return (
-        <SWRConfig
-            value={{
-                onSuccess: (data) => {
-                    console.log("success")
-                },
-                onError: (err) => {
-                    console.log("global swr err", err)
-                }
-            }}
-        >
+        <ChakraProvider theme={theme}>
             <HashRouter>
                 <Switch>
                     <Route path={`/auth`} component={AuthLayout} />
@@ -38,7 +20,7 @@ const AppContent = () => {
                     <Redirect from={`/`} to="/auth/signin" />
                 </Switch>
             </HashRouter>
-        </SWRConfig>
+        </ChakraProvider>
     )
 }
 

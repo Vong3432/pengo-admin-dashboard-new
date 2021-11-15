@@ -1,12 +1,12 @@
 // chakra imports
-import { Box, ChakraProvider, Portal } from "@chakra-ui/react";
+import { Box, Portal } from "@chakra-ui/react";
 import Footer from "components/Footer/Footer.js";
 // core components
 import AuthNavbar from "components/Navbars/AuthNavbar.js";
 import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import routes from "routes.js";
-import theme from "theme/theme.js";
+import routes from "routes";
+import theme from "theme/theme";
 
 export default function Pages(props) {
   const { ...rest } = props;
@@ -84,7 +84,7 @@ export default function Pages(props) {
   const navRef = React.useRef();
   document.documentElement.dir = "ltr";
   return (
-    <ChakraProvider theme={theme} resetCss={false} w="100%">
+    <>
       <Box ref={navRef} w="100%">
         <Portal containerRef={navRef}>
           <AuthNavbar
@@ -104,6 +104,6 @@ export default function Pages(props) {
           <Footer />
         </Box>
       </Box>
-    </ChakraProvider>
+    </>
   );
 }

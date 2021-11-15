@@ -52,7 +52,7 @@ const DPOTableDetail = () => {
     const initialRef = React.useRef()
     const finalRef = React.useRef()
     const textColor = useColorModeValue("gray.700", "white");
-    const { data, error } = useSWR(`${API_BASE_URL}/dpo-tables/${id}`, fetcher)
+    const { data, error } = useSWR(`${API_BASE_URL}/admin/dpo-tables/${id}`, fetcher)
     const [rows, setRows] = useState([])
     const [colsFromDB, setColsFromDB] = useState([])
     const [selectedCol, setSelectedCol] = useState([])

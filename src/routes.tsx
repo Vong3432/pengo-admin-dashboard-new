@@ -3,7 +3,7 @@ import Dashboard from "views/Dashboard/Dashboard.js";
 import Tables from "views/Dashboard/Priority.js";
 import Billing from "views/Dashboard/Billing.js";
 import Profile from "views/Dashboard/Profile.js";
-import SignIn from "views/Pages/SignIn.js";
+import SignIn from "views/Pages/SignIn";
 import SignUp from "views/Pages/SignUp.js";
 
 import {

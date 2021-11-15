@@ -2,7 +2,7 @@
   "name": "purity-dashboard-react",
   "version": "1.0.1",
   "private": true,
-  "homepage": "https://demos.creative-tim.com/purity-ui-dashboard/#/",
+  "homepage": ".",
   "dependencies": {
     "@chakra-ui/icons": "^1.0.15",
     "@chakra-ui/react": "^1.6.5",
@@ -28,6 +28,7 @@
     "react-datetime": "3.0.4",
     "react-dom": "17.0.2",
     "react-github-btn": "^1.2.1",
+    "react-hook-form": "^7.19.5",
     "react-icons": "^4.2.0",
     "react-jvectormap": "0.0.16",
     "react-router-dom": "5.2.0",

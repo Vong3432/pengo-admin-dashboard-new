@@ -33,7 +33,7 @@ const fetcher = url => axiosFetcher.get(url).then(res => {
 function Priority() {
   const textColor = useColorModeValue("gray.700", "white");
 
-  const { data, error } = useSWR(`${API_BASE_URL}/dpo-tables`, fetcher)
+  const { data, error } = useSWR(`${API_BASE_URL}admin/dpo-tables`, fetcher)
 
   if (error) return <div>Error</div>
 
