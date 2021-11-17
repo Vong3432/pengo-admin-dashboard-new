@@ -34,14 +34,7 @@ import { useParams } from 'react-router';
 import TablesDetailRow from 'components/Priority/TablesDetailRow';
 import { AddIcon } from '@chakra-ui/icons';
 
-const fetcher = url => axiosFetcher.get(url).then(res => {
-    let promise = new Promise((resolve) => {
-        window.setTimeout(function () {
-            resolve(res.data.data);
-        }, 1000);
-    });
-    return promise;
-})
+const fetcher = url => axiosFetcher.get(url).then(res => res.data)
 
 
 const DPOTableDetail = () => {
@@ -52,14 +45,17 @@ const DPOTableDetail = () => {
     const initialRef = React.useRef()
     const finalRef = React.useRef()
     const textColor = useColorModeValue("gray.700", "white");
-    const { data, error } = useSWR(`${API_BASE_URL}/admin/dpo-tables/${id}`, fetcher)
+    const { data, error } = useSWR(`${API_BASE_URL}admin/dpo-tables/${id}`, fetcher)
     const [rows, setRows] = useState([])
     const [colsFromDB, setColsFromDB] = useState([])
     const [selectedCol, setSelectedCol] = useState([])
 
     useEffect(() => {
-        if (!data) return;
-        setRows(() => [...data['dpo_cols']])
+        if (data && data['dpo_cols']) {
+            setRows(() => [...data['dpo_cols']])
+        } else {
+            setRows(() => [])
+        }
     }, [data])
 
     useEffect(() => {
@@ -69,8 +65,9 @@ const DPOTableDetail = () => {
     }, [isOpen])
 
     const fetchDBCols = async () => {
-        const response = await axiosFetcher.get(`${API_BASE_URL}/db/columns/${data['table_name']}`)
-        const toIterable = Object.keys(response.data.data).map((key) => key);
+        const response = await axiosFetcher.get(`${API_BASE_URL}admin/db/columns/${data['table_name']}`)
+        console.log(response)
+        const toIterable = Object.keys(response.data).map((key) => key);
         setColsFromDB([...toIterable])
     }
 
@@ -80,7 +77,7 @@ const DPOTableDetail = () => {
 
     const addNewRow = async () => {
         // add the row
-        const response = await axiosFetcher.post(`${API_BASE_URL}/dpo-cols`, {
+        const response = await axiosFetcher.post(`${API_BASE_URL}dpo-cols`, {
             dpo_table_id: id,
             column: selectedCol
         })
@@ -114,7 +111,7 @@ const DPOTableDetail = () => {
         <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
             <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
                 <CardHeader p="6px 0px 22px 0px">
-                    {!data && !error ? (
+                    {!data?.['dpo_cols'] && !error ? (
                         <Skeleton minWidth="250px" height="20px" />
                     ) : (
                         <Flex w="100%">
@@ -147,7 +144,7 @@ const DPOTableDetail = () => {
                         </Thead>
                         <Tbody>
                             {
-                                rows.length === 0 && !error ? (
+                                rows.length === 0 && !data && !error ? (
                                     <TBodySkeletonLoading />
                                 ) :
                                     <DetailRows onDelete={onDelete} rows={rows} />

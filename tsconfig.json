@@ -6,6 +6,8 @@
       "dom.iterable",
       "esnext"
     ],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "baseUrl": "src",
     "allowJs": true,
     "skipLibCheck": true,
@@ -19,7 +21,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "strictPropertyInitialization": false,
   },
   "include": [
     "src",

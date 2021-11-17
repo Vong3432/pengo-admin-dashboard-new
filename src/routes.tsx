@@ -16,6 +16,8 @@ import {
 
 import { HiTable } from 'react-icons/hi/index'
 import Icon from "@chakra-ui/icon";
+import { SettingsIcon } from "@chakra-ui/icons";
+import Setting from "views/Dashboard/Setting";
 
 var dashRoutes = [
   {
@@ -42,6 +44,14 @@ var dashRoutes = [
     component: Billing,
     layout: "/admin",
   },
+  {
+    path: "/settings",
+    name: "Setting",
+    rtlName: "Setting",
+    icon: <SettingsIcon color="inherit" />,
+    component: Setting,
+    layout: "/admin",
+  },
   // {
   //   path: "/rtl-support-page",
   //   name: "RTL",
@@ -56,15 +66,15 @@ var dashRoutes = [
     rtlName: "صفحات",
     state: "pageCollapse",
     views: [
-      {
-        path: "/profile",
-        name: "Profile",
-        rtlName: "لوحة القيادة",
-        icon: <PersonIcon color="inherit" />,
-        secondaryNavbar: true,
-        component: Profile,
-        layout: "/admin",
-      },
+      // {
+      //   path: "/profile",
+      //   name: "Profile",
+      //   rtlName: "لوحة القيادة",
+      //   icon: <PersonIcon color="inherit" />,
+      //   secondaryNavbar: true,
+      //   component: Profile,
+      //   layout: "/admin",
+      // },
       {
         path: "/signin",
         name: "Sign In",
@@ -73,15 +83,15 @@ var dashRoutes = [
         component: SignIn,
         layout: "/auth",
       },
-      {
-        path: "/signup",
-        name: "Sign Up",
-        rtlName: "لوحة القيادة",
-        icon: <RocketIcon color="inherit" />,
-        secondaryNavbar: true,
-        component: SignUp,
-        layout: "/auth",
-      },
+      // {
+      //   path: "/signup",
+      //   name: "Sign Up",
+      //   rtlName: "لوحة القيادة",
+      //   icon: <RocketIcon color="inherit" />,
+      //   secondaryNavbar: true,
+      //   component: SignUp,
+      //   layout: "/auth",
+      // },
     ],
   },
 ];

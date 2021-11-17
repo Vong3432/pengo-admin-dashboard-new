@@ -39,7 +39,7 @@ export default function Footer(props) {
             md: "44px",
           }}
         >
-          <Link color="gray.400" href="https://www.creative-tim.com">
+          <Link color="gray.400" href="#">
             API Documentation
           </Link>
         </ListItem>
@@ -49,7 +49,7 @@ export default function Footer(props) {
             md: "44px",
           }}
         >
-          <Link color="gray.400" href="https://www.creative-tim.com">
+          <Link color="gray.400" href="#">
             Github
           </Link>
         </ListItem>

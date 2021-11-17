@@ -5,6 +5,10 @@ axios.defaults.withCredentials = true
 
 axios.interceptors.request.use((config) => {
     console.log("Before request", config)
+    const token = localStorage.getItem('token')
+
+    config.headers['authorization'] = `Bearer ${token}`
+
     return config
 }, (err) => {
     return Promise.reject(err)
@@ -14,7 +18,7 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
-    return response;
+    return response.data;
   }, function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
@@ -27,5 +31,11 @@ export const axiosFetcher = {
     }),
     post: async (url, data) => axios.post(url, data, {
         withCredentials: true,
-    })
+    }),
+    put: async (url, data) => axios.put(url, data, {
+        withCredentials: true,
+    }),
+    del: async (url, data) => axios.delete(url, data, {
+        withCredentials: true,
+    }),
 };

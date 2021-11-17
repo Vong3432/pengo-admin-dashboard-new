@@ -38,7 +38,8 @@
     "react-tagsinput": "3.19.0",
     "stylis": "^4.0.10",
     "stylis-plugin-rtl": "^2.1.0",
-    "swr": "^1.0.1"
+    "swr": "^1.0.1",
+    "ts-jackson": "^1.5.0"
   },
   "scripts": {
     "start": "react-scripts start",

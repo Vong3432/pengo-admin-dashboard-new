@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 // Chakra imports
 import {
   Flex,
@@ -10,58 +10,97 @@ import {
   Tr,
   Td,
   useColorModeValue,
-  Skeleton
+  Skeleton,
+  Button,
+  useDisclosure
 } from "@chakra-ui/react";
 // Custom components
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import TablesTableRow from "components/Priority/TablesTableRow";
 import useSWR from "swr";
 import { API_BASE_URL } from "consts/api";
 import { axiosFetcher } from "utils/apiFetcher";
+import SettingTableRows from "components/Settings/SettingTableRows";
+import { Setting } from "models/Setting";
+import { deserialize } from "ts-jackson";
+import SettingFormModal from "components/Settings/SettingFormModal";
 
-const fetcher = url => axiosFetcher.get(url).then(res => {
-  console.log(res)
-  let promise = new Promise((resolve) => {
-    window.setTimeout(function () {
-      resolve(res['data']);
-    }, 1000);
-  });
-  return promise;
-})
+const fetcher = (url: string) => axiosFetcher.get(url).then(r => r)
 
-function Priority() {
+function Settings() {
   const textColor = useColorModeValue("gray.700", "white");
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [setting, setSetting] = useState<Setting | null>(null)
+  const { data, error, mutate } = useSWR<any, any>(`${API_BASE_URL}admin/settings`, fetcher)
 
-  const { data, error } = useSWR(`${API_BASE_URL}admin/dpo-tables`, fetcher)
+  const onModalClosed = () => {
+    onClose();
+    mutate();
+  }
+
+  const onCreateClicked = () => {
+    setSetting(() => null)
+    onOpen()
+  }
+
+  const onEditClicked = (setting: Setting) => {
+    console.log(setting)
+    setSetting(() => ({ ...setting }))
+    onOpen();
+  }
 
   if (error) return <div>Error</div>
 
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
+      <SettingFormModal onClose={onModalClosed} setting={setting} isOpen={isOpen} />
       <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
         <CardHeader p="6px 0px 22px 0px">
           <Text fontSize="xl" color={textColor} fontWeight="bold">
-            Priority Tables
+            Setting Tables
           </Text>
+          <Button onClick={onCreateClicked} backgroundColor="teal.300" colorScheme="teal" color="white" size="lg" ml="auto">
+            Create
+          </Button>
         </CardHeader>
         <CardBody>
           <Table variant="simple" color={textColor}>
             <Thead>
               <Tr my=".8rem" pl="0px" color="gray.400">
                 <Th pl="0px" color="gray.400">
-                  Table Name
+                  Name
+                </Th>
+                <Th pl="0px" color="gray.400">
+                  Key
+                </Th>
+                <Th pl="0px" color="gray.400">
+                  Value
                 </Th>
                 <Th color="gray.400">Status</Th>
-                <Th></Th>
+                <Th>Actions</Th>
               </Tr>
             </Thead>
             <Tbody>
               {
                 !data && !error ? (
                   <Tr>
-                    <Td minWidth={{ sm: "250px" }}>
+                    <Td minWidth={{ sm: "150px" }}>
+                      <Skeleton height="20px" />
+                      <Skeleton height="20px" mt={4} />
+                      <Skeleton height="20px" mt={4} />
+                    </Td>
+                    <Td>
+                      <Skeleton height="20px" />
+                      <Skeleton height="20px" mt={4} />
+                      <Skeleton height="20px" mt={4} />
+                    </Td>
+                    <Td>
+                      <Skeleton height="20px" />
+                      <Skeleton height="20px" mt={4} />
+                      <Skeleton height="20px" mt={4} />
+                    </Td>
+                    <Td>
                       <Skeleton height="20px" />
                       <Skeleton height="20px" mt={4} />
                       <Skeleton height="20px" mt={4} />
@@ -78,14 +117,18 @@ function Priority() {
                     </Td>
                   </Tr>
                 ) :
-                  data.map((row) => {
-                    const { table_name: tableName, is_active: isActive, id } = row;
+                  data['data'].map((json: any) => {
+                    const toJson = JSON.stringify(json)
+                    const setting = deserialize(toJson, Setting);
                     return (
-                      <TablesTableRow
-                        key={id}
-                        id={id}
-                        name={tableName}
-                        isActive={isActive}
+                      <SettingTableRows
+                        onEdit={() => onEditClicked(setting)}
+                        key={setting.settingKey}
+                        value={setting.value}
+                        settingKey={setting.settingKey}
+                        id={setting.id}
+                        name={setting.name}
+                        isActive={setting.isActive}
                       />
                     );
                   })
@@ -138,4 +181,4 @@ function Priority() {
   );
 }
 
-export default Priority;
+export default Settings;
