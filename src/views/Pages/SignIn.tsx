@@ -20,6 +20,7 @@ import { axiosFetcher } from "utils/apiFetcher";
 import { useHistory } from "react-router";
 import { useForm } from "react-hook-form";
 import { login } from "utils/auth";
+import { API_BASE_URL } from "consts/api";
 
 type SignInFormType = {
   email: string;
@@ -47,7 +48,7 @@ function SignIn() {
 
   const onSubmit = async (data: SignInFormType) => {
     try {
-      const response = await axiosFetcher.post("auth/admin/login", {
+      const response = await axiosFetcher.post(`${API_BASE_URL}auth/admin/login`, {
         ...data
       })
       const responseData = await response.data;
