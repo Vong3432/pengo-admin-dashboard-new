@@ -54,6 +54,7 @@ function SignIn() {
       const responseData = await response.data;
 
       if (response.status === 200) {
+        console.log("200", responseData)
         login(responseData.data.token.token)
         history.push('/admin/dashboard')
       }
