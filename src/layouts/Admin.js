@@ -130,7 +130,7 @@ export default function Dashboard(props) {
               <Switch>
                 {getRoutes(routes)}
                 {/* Add new route that don't want to be appeared in sidebar. */}
-                <Route path={"/admin/dpo-tables/:id"} component={DPOTableDetail} />
+                <Route path={"/admin/dpo-tables/:id"} exact component={DPOTableDetail} />
                 <Redirect from="/admin" to="/admin/dashboard" />
               </Switch>
             </PanelContainer>

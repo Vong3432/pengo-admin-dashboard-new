@@ -30,22 +30,21 @@ import React, { useEffect, useState } from 'react'
 import useSWR from 'swr';
 import { API_BASE_URL } from 'consts/api';
 import { axiosFetcher } from 'utils/apiFetcher';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import TablesDetailRow from 'components/Priority/TablesDetailRow';
 import { AddIcon } from '@chakra-ui/icons';
 
-const fetcher = url => axiosFetcher.get(url).then(res => res.data)
-
+const fetcher = (url, id) => axiosFetcher.get(`${url}/${id}`).then(res => res.data['data'])
 
 const DPOTableDetail = () => {
-    let { id } = useParams()
+    const { id } = useParams()
     const toast = useToast();
     const toastId = "global-swr-err" // prevent duplication.
     const { isOpen, onOpen, onClose } = useDisclosure()
     const initialRef = React.useRef()
     const finalRef = React.useRef()
     const textColor = useColorModeValue("gray.700", "white");
-    const { data, error } = useSWR(`${API_BASE_URL}admin/dpo-tables/${id}`, fetcher)
+    const { data, error, mutate } = useSWR([`${API_BASE_URL}admin/dpo-tables`, id], fetcher)
     const [rows, setRows] = useState([])
     const [colsFromDB, setColsFromDB] = useState([])
     const [selectedCol, setSelectedCol] = useState([])
@@ -66,8 +65,8 @@ const DPOTableDetail = () => {
 
     const fetchDBCols = async () => {
         const response = await axiosFetcher.get(`${API_BASE_URL}admin/db/columns/${data['table_name']}`)
-        console.log(response)
-        const toIterable = Object.keys(response.data).map((key) => key);
+        const responseData = await response.data
+        const toIterable = Object.keys(responseData['data']).map((key) => key);
         setColsFromDB([...toIterable])
     }
 
@@ -77,7 +76,7 @@ const DPOTableDetail = () => {
 
     const addNewRow = async () => {
         // add the row
-        const response = await axiosFetcher.post(`${API_BASE_URL}dpo-cols`, {
+        const response = await axiosFetcher.post(`${API_BASE_URL}admin/dpo-cols`, {
             dpo_table_id: id,
             column: selectedCol
         })
@@ -100,8 +99,14 @@ const DPOTableDetail = () => {
         }
     }
 
-    const onDelete = () => {
-        setRows((prev) => prev.slice(0, -1))
+    const onDelete = async (row) => {
+        try {
+            console.log("Row",row, id)
+            await axiosFetcher.del(`${API_BASE_URL}admin/dpo-cols/${row.id}`)
+            mutate([`${API_BASE_URL}admin/dpo-tables`, id])
+        } catch (error) {
+            console.log(error)
+        }
     }
 
 
@@ -147,7 +152,7 @@ const DPOTableDetail = () => {
                                 rows.length === 0 && !data && !error ? (
                                     <TBodySkeletonLoading />
                                 ) :
-                                    <DetailRows onDelete={onDelete} rows={rows} />
+                                    <DetailRows onDelete={(row) =>onDelete(row)} rows={rows} />
                             }
                         </Tbody>
                     </Table>

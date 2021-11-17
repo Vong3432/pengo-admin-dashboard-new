@@ -22,13 +22,7 @@ import { API_BASE_URL } from "consts/api";
 import { axiosFetcher } from "utils/apiFetcher";
 
 const fetcher = url => axiosFetcher.get(url).then(res => {
-  console.log(res)
-  let promise = new Promise((resolve) => {
-    window.setTimeout(function () {
-      resolve(res['data']);
-    }, 1000);
-  });
-  return promise;
+  return res.data['data']
 })
 
 function Priority() {

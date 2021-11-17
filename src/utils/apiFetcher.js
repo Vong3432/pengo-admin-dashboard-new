@@ -18,7 +18,7 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
-    return response.data;
+    return response;
   }, function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
@@ -35,7 +35,7 @@ export const axiosFetcher = {
     put: async (url, data) => axios.put(url, data, {
         withCredentials: true,
     }),
-    del: async (url, data) => axios.delete(url, data, {
-        withCredentials: true,
+    del: async (url) => axios.delete(url, {
+        withCredentials: true
     }),
 };

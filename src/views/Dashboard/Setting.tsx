@@ -26,7 +26,7 @@ import { Setting } from "models/Setting";
 import { deserialize } from "ts-jackson";
 import SettingFormModal from "components/Settings/SettingFormModal";
 
-const fetcher = (url: string) => axiosFetcher.get(url).then(r => r)
+const fetcher = (url: string) => axiosFetcher.get(url).then(r => r.data)
 
 function Settings() {
   const textColor = useColorModeValue("gray.700", "white");
@@ -51,6 +51,7 @@ function Settings() {
   }
 
   if (error) return <div>Error</div>
+
 
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
