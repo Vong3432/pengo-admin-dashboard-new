@@ -46,20 +46,15 @@ function SignIn() {
   }
 
   const onSubmit = async (data: SignInFormType) => {
-    console.log(data)
     try {
       const response = await axiosFetcher.post("auth/admin/login", {
         ...data
       })
       const responseData = await response.data;
 
-      console.log("response", response)
+      login(responseData.data.token.token)
+      history.push('/admin/dashboard')
 
-      if (response.status === 200) {
-        console.log("200", responseData)
-        login(responseData.data.token.token)
-        history.push('/admin/dashboard')
-      }
     } catch (error) {
       console.log(error)
       toast({
