@@ -18,6 +18,7 @@ import { HiTable } from 'react-icons/hi/index'
 import Icon from "@chakra-ui/icon";
 import { SettingsIcon } from "@chakra-ui/icons";
 import Setting from "views/Dashboard/Setting";
+import SystemFunctions from "views/Dashboard/SystemFunctions";
 
 var dashRoutes = [
   {
@@ -42,6 +43,14 @@ var dashRoutes = [
     rtlName: "لوحة القيادة",
     icon: <CreditIcon color="inherit" />,
     component: Billing,
+    layout: "/admin",
+  },
+  {
+    path: "/system-functions",
+    name: "System Functions",
+    rtlName: "System Functions",
+    icon: <SettingsIcon color="inherit" />,
+    component: SystemFunctions,
     layout: "/admin",
   },
   {
