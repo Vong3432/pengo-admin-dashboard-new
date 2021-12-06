@@ -102,7 +102,7 @@ export default function Dashboard(props) {
     <>
       <Sidebar
         routes={routes}
-        logoText={"PURITY UI DASHBOARD"}
+        logoText={"PENGO UI DASHBOARD"}
         display="none"
         sidebarVariant={sidebarVariant}
         {...rest}

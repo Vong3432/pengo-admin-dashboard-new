@@ -6,23 +6,60 @@ import {
   Td,
   Text,
   Tr,
-  LinkBox,
-  LinkOverlay,
   useColorModeValue,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
 } from "@chakra-ui/react";
-import React from "react";
 import { useHistory } from "react-router";
+import { axiosFetcher } from "utils/apiFetcher";
+import { API_BASE_URL } from "consts/api";
+import { useToast } from "@chakra-ui/toast";
+import React from "react";
 
 function TablesTableRow(props) {
-  const { id, name, isActive } = props;
+  const { id, name, isActive, onControlActivating } = props;
+
+  const [isOpen, setIsOpen] = React.useState(false)
+  const onClose = () => setIsOpen(false)
+  const cancelRef = React.useRef()
 
   const history = useHistory()
+  const toast = useToast()
   const textColor = useColorModeValue("gray.700", "white");
   const bgStatus = useColorModeValue("gray.400", "#1a202c");
   const colorStatus = useColorModeValue("white", "gray.400");
 
-  const onEditClicked = () => {
+  const isDeactivating = isActive === 1
+
+  const viewDetail = () => {
     history.push(`/admin/dpo-tables/${id}`)
+  }
+
+  const onConfirm = async () => {
+    try {
+      onClose()
+      await axiosFetcher.put(`${API_BASE_URL}admin/dpo-tables/${id}`, {
+        is_active: isActive ? 0 : 1, // opposite
+      })
+      toast({
+        title: `${isDeactivating ? 'Deactivated' : 'Reactivated'} ${name} successfully`,
+        isClosable: true,
+        status: "success",
+      })   
+      onControlActivating()
+    } catch (error) {
+      toast({
+        id: "global-swr-err",
+        title: `Unable to ${isDeactivating ? 'deactivate' : 'activate'}`,
+        description: `err ${error}`,
+        status: "error",
+        isClosable: true
+      })
+    }
   }
 
   return (
@@ -57,17 +94,52 @@ function TablesTableRow(props) {
         </Badge>
       </Td>
       <Td>
-        <Button p="0px" bg="transparent" variant="no-hover" onClick={onEditClicked}>
+        <Button colorScheme="" onClick={viewDetail}>
           <Text
             fontSize="md"
             color="gray.400"
             fontWeight="bold"
             cursor="pointer"
           >
-            Edit
+            View
+          </Text>
+        </Button>
+        <Button ml="2" colorScheme="" bgColor="transparent" color={`${isActive ? "red.500" : "teal.500"}`} onClick={() => setIsOpen(true)}>
+          <Text
+            fontSize="md"
+            fontWeight="bold"
+            cursor="pointer"
+          >
+            { isActive ? 'Deactivate' : 'Activate'}
           </Text>
         </Button>
       </Td>
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+              {isDeactivating ? 'Deactivate' : 'Reactivate' } { name } 
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure? You can't undo this action afterwards.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button colorScheme={isDeactivating ? 'red' : 'teal'} onClick={onConfirm} ml={3}>
+              {isDeactivating ? 'Deactivate' : 'Reactivate' }
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Tr>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 // Chakra imports
 import {
   Flex,
@@ -22,10 +22,7 @@ import CardBody from "components/Card/CardBody.js";
 import useSWR from "swr";
 import { API_BASE_URL } from "consts/api";
 import { axiosFetcher } from "utils/apiFetcher";
-import SettingTableRows from "components/Settings/SettingTableRows";
-import { Setting } from "models/Setting";
 import { deserialize } from "ts-jackson";
-import SettingFormModal from "components/Settings/SettingFormModal";
 import { SystemFunction } from "models/SystemFunction";
 import SystemFunctionRows from "components/SystemFunctions/SystemFunctionRows";
 import SystemFunctionFormModal from "components/SystemFunctions/SystemFunctionFormModal";

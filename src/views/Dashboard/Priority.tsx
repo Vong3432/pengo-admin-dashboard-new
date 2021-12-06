@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 // Chakra imports
 import {
   Flex,
@@ -10,7 +10,10 @@ import {
   Tr,
   Td,
   useColorModeValue,
-  Skeleton
+  Skeleton,
+  useToast,
+  useDisclosure,
+  Button
 } from "@chakra-ui/react";
 // Custom components
 import Card from "components/Card/Card.js";
@@ -20,25 +23,51 @@ import TablesTableRow from "components/Priority/TablesTableRow";
 import useSWR from "swr";
 import { API_BASE_URL } from "consts/api";
 import { axiosFetcher } from "utils/apiFetcher";
+import { deserialize } from "ts-jackson";
+import { Priority as PriorityModel } from 'models/Priority'
+import PriorityFormModal from "components/Priority/PriorityFormModal";
 
-const fetcher = url => axiosFetcher.get(url).then(res => {
+const fetcher = (url: string) => axiosFetcher.get(url).then(res => {
   return res.data['data']
 })
 
 function Priority() {
+
+  const [priority, setPriority] = useState<PriorityModel | null>(null)
+
+  const toast = useToast()
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const textColor = useColorModeValue("gray.700", "white");
 
-  const { data, error } = useSWR(`${API_BASE_URL}admin/dpo-tables`, fetcher)
+  const { data, error, mutate } = useSWR(`${API_BASE_URL}admin/dpo-tables`, fetcher)
+
+  const onModalClosed = () => {
+    onClose();
+    mutate();
+  }
+
+  const onCreateClicked = () => {
+    setPriority(() => null)
+    onOpen()
+  }
+
+  const onControlActivating = () => {
+    mutate()
+  }
 
   if (error) return <div>Error</div>
 
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
+      <PriorityFormModal onClose={onModalClosed} priority={priority} isOpen={isOpen} />
       <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
         <CardHeader p="6px 0px 22px 0px">
           <Text fontSize="xl" color={textColor} fontWeight="bold">
             Priority Tables
           </Text>
+          <Button onClick={onCreateClicked} backgroundColor="teal.300" colorScheme="teal" color="white" size="lg" ml="auto">
+            Create
+          </Button>
         </CardHeader>
         <CardBody>
           <Table variant="simple" color={textColor}>
@@ -48,7 +77,7 @@ function Priority() {
                   Table Name
                 </Th>
                 <Th color="gray.400">Status</Th>
-                <Th></Th>
+                <Th>Actions</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -72,14 +101,16 @@ function Priority() {
                     </Td>
                   </Tr>
                 ) :
-                  data.map((row) => {
-                    const { table_name: tableName, is_active: isActive, id } = row;
+                  data.map((row: any) => {
+                    const toJson = JSON.stringify(row)
+                    const currentPriority = deserialize(toJson, PriorityModel);
                     return (
                       <TablesTableRow
-                        key={id}
-                        id={id}
-                        name={tableName}
-                        isActive={isActive}
+                        key={currentPriority.id}
+                        id={currentPriority.id}
+                        name={currentPriority.tableName}
+                        isActive={currentPriority.isActive}
+                        onControlActivating={onControlActivating}
                       />
                     );
                   })

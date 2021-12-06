@@ -1,6 +1,6 @@
 // import
 import Dashboard from "views/Dashboard/Dashboard.js";
-import Tables from "views/Dashboard/Priority.js";
+import Tables from "views/Dashboard/Priority";
 import Billing from "views/Dashboard/Billing.js";
 import Profile from "views/Dashboard/Profile.js";
 import SignIn from "views/Pages/SignIn";
@@ -14,11 +14,12 @@ import {
   RocketIcon,
 } from "components/Icons/Icons";
 
-import { HiTable } from 'react-icons/hi/index'
+import { HiTable, HiUserGroup } from 'react-icons/hi/index'
 import Icon from "@chakra-ui/icon";
 import { SettingsIcon } from "@chakra-ui/icons";
 import Setting from "views/Dashboard/Setting";
 import SystemFunctions from "views/Dashboard/SystemFunctions";
+import UsersPage from "views/Dashboard/Users";
 
 var dashRoutes = [
   {
@@ -27,6 +28,14 @@ var dashRoutes = [
     rtlName: "لوحة القيادة",
     icon: <HomeIcon color="inherit" />,
     component: Dashboard,
+    layout: "/admin",
+  },
+  {
+    path: "/users",
+    name: "Users",
+    rtlName: "users",
+    icon: <Icon as={HiUserGroup} color="inherit" />,
+    component: UsersPage,
     layout: "/admin",
   },
   {

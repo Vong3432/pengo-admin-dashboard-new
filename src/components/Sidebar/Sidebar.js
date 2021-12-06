@@ -85,6 +85,9 @@ function Sidebar(props) {
           </>
         );
       }
+
+      if(prop.layout === "/auth") return <></>
+
       return (
         <NavLink to={prop.layout + prop.path}>
           {activeRoute(prop.layout + prop.path) === "active" ? (
@@ -314,6 +317,9 @@ export function SidebarResponsive(props) {
           </>
         );
       }
+
+      if(prop.layout === "/auth") return <></>
+
       return (
         <NavLink to={prop.layout + prop.path}>
           {activeRoute(prop.layout + prop.path) === "active" ? (
