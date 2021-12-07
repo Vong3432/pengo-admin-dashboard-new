@@ -27,7 +27,7 @@ export const barChartOptions = {
     theme: "dark",
   },
   xaxis: {
-    categories: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     show: false,
     labels: {
       show: false,
@@ -37,7 +37,7 @@ export const barChartOptions = {
       },
     },
     axisBorder: {
-      show: false,
+      show: true,
     },
     axisTicks: {
       show: false,
@@ -85,13 +85,13 @@ export const barChartOptions = {
 
 export const lineChartData = [
   {
-    name: "Mobile apps",
+    name: "Booking",
     data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
   },
-  {
-    name: "Websites",
-    data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
-  },
+  // {
+  //   name: "Websites",
+  //   data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
+  // },
 ];
 
 export const lineChartOptions = {

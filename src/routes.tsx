@@ -1,17 +1,13 @@
 // import
-import Dashboard from "views/Dashboard/Dashboard.js";
+import Dashboard from "views/Dashboard/Dashboard";
 import Tables from "views/Dashboard/Priority";
 import Billing from "views/Dashboard/Billing.js";
-import Profile from "views/Dashboard/Profile.js";
 import SignIn from "views/Pages/SignIn";
-import SignUp from "views/Pages/SignUp.js";
 
 import {
   HomeIcon,
   CreditIcon,
-  PersonIcon,
   DocumentIcon,
-  RocketIcon,
 } from "components/Icons/Icons";
 
 import { HiTable, HiUserGroup } from 'react-icons/hi/index'
@@ -46,14 +42,14 @@ var dashRoutes = [
     component: Tables,
     layout: "/admin",
   },
-  {
-    path: "/billing",
-    name: "Billing",
-    rtlName: "لوحة القيادة",
-    icon: <CreditIcon color="inherit" />,
-    component: Billing,
-    layout: "/admin",
-  },
+  // {
+  //   path: "/billing",
+  //   name: "Billing",
+  //   rtlName: "لوحة القيادة",
+  //   icon: <CreditIcon color="inherit" />,
+  //   component: Billing,
+  //   layout: "/admin",
+  // },
   {
     path: "/system-functions",
     name: "System Functions",

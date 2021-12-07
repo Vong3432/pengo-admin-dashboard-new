@@ -1,14 +1,12 @@
 // Chakra imports
 import {
   Box,
-  Button,
   Flex,
   Grid,
   Icon,
-  Image,
-  Portal,
   Progress,
   SimpleGrid,
+  Skeleton,
   Spacer,
   Stat,
   StatHelpText,
@@ -24,8 +22,6 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 // assets
-import peopleImage from "assets/img/people-image.png";
-import logoChakra from "assets/svg/logo-white.svg";
 // Custom components
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
@@ -36,6 +32,7 @@ import IconBox from "components/Icons/IconBox";
 // Custom icons
 import {
   CartIcon,
+  CreditIcon,
   DocumentIcon,
   GlobeIcon,
   RocketIcon,
@@ -43,39 +40,33 @@ import {
   WalletIcon,
 } from "components/Icons/Icons.js";
 import DashboardTableRow from "components/Priority/DashboardTableRow";
-import TimelineRow from "components/Priority/TimelineRow";
-import React, { useState } from "react";
+import { API_BASE_URL } from "consts/api";
+import { useRef, useState } from "react";
 // react icons
-import { BsArrowRight } from "react-icons/bs";
 import { IoCheckmarkDoneCircleSharp } from "react-icons/io5";
-import { dashboardTableData, timelineData } from "variables/general";
+import useSWR from "swr";
+import { axiosFetcher } from "utils/apiFetcher";
+import { dashboardTableData } from "variables/general";
+
+const fetcher = (url: string) => axiosFetcher.get(url).then(r => {
+  return r.data.data
+})
 
 export default function Dashboard() {
 
-  const value = "$100.000";
   // Chakra Color Mode
-  const { colorMode, toggleColorMode } = useColorMode();
   const iconTeal = useColorModeValue("teal.300", "teal.300");
   const iconBoxInside = useColorModeValue("white", "white");
   const textColor = useColorModeValue("gray.700", "white");
-  const [series, setSeries] = useState([
-    {
-      type: "area",
-      name: "Mobile apps",
-      data: [190, 220, 205, 350, 370, 450, 400, 360, 210, 250, 292, 150],
-    },
-    {
-      type: "area",
-      name: "Websites",
-      data: [400, 291, 121, 117, 25, 133, 121, 211, 147, 25, 201, 203],
-    },
-  ]);
-  const overlayRef = React.useRef();
+
+  const { data: bookingGraphData, error: bookingGraphError } = useSWR<any, any>(`${API_BASE_URL}admin/dashboard/booking-data`, fetcher)
+  const { data: userStatData, error: userStatError } = useSWR<any, any>(`${API_BASE_URL}admin/dashboard/stats`, fetcher)
+  const { data: commissionAndItemData, error: commissionAndItemError } = useSWR<any, any>(`${API_BASE_URL}admin/dashboard/commission-items-data`, fetcher)
 
   return (
     <Flex flexDirection="column" pt={{ base: "120px", md: "75px" }}>
       <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} spacing="24px">
-        <Card minH="83px">
+        {/* <Card minH="83px">
           <CardBody>
             <Flex flexDirection="row" align="center" justify="center" w="100%">
               <Stat me="auto">
@@ -85,7 +76,7 @@ export default function Dashboard() {
                   fontWeight="bold"
                   pb=".1rem"
                 >
-                  Today's Money
+                  Today's transactions
                 </StatLabel>
                 <Flex>
                   <StatNumber fontSize="lg" color={textColor}>
@@ -109,7 +100,7 @@ export default function Dashboard() {
               </IconBox>
             </Flex>
           </CardBody>
-        </Card>
+        </Card> */}
         <Card minH="83px">
           <CardBody>
             <Flex flexDirection="row" align="center" justify="center" w="100%">
@@ -120,23 +111,29 @@ export default function Dashboard() {
                   fontWeight="bold"
                   pb=".1rem"
                 >
-                  Today's Users
+                  Total Users
                 </StatLabel>
                 <Flex>
-                  <StatNumber fontSize="lg" color={textColor}>
-                    2,300
-                  </StatNumber>
-                  <StatHelpText
-                    alignSelf="flex-end"
-                    justifySelf="flex-end"
-                    m="0px"
-                    color="green.400"
-                    fontWeight="bold"
-                    ps="3px"
-                    fontSize="md"
-                  >
-                    +5%
-                  </StatHelpText>
+                  {!userStatData && !userStatError
+                    ? <Skeleton height="20px" />
+                    : (
+                      <StatNumber fontSize="lg" color={textColor}>{userStatData['user_stat']['total']['value']}</StatNumber>
+                    )}
+                  {!userStatData && !userStatError
+                    ? <Skeleton height="20px" />
+                    : (
+                      <StatHelpText
+                        alignSelf="flex-end"
+                        justifySelf="flex-end"
+                        m="0px"
+                        color={`${userStatData['user_stat']['total']['rate'] >= 0 ? "green.400" : "red.400"}`}
+                        fontWeight="bold"
+                        ps="3px"
+                        fontSize="md"
+                      >
+                        {userStatData['user_stat']['total']['rate'] >= 0 && "+"}{userStatData['user_stat']['total']['rate']}%
+                      </StatHelpText>
+                    )}
                 </Flex>
               </Stat>
               <IconBox as="box" h={"45px"} w={"45px"} bg={iconTeal}>
@@ -155,23 +152,29 @@ export default function Dashboard() {
                   fontWeight="bold"
                   pb=".1rem"
                 >
-                  New Clients
+                  New Pengoo
                 </StatLabel>
                 <Flex>
-                  <StatNumber fontSize="lg" color={textColor}>
-                    +3,020
-                  </StatNumber>
-                  <StatHelpText
-                    alignSelf="flex-end"
-                    justifySelf="flex-end"
-                    m="0px"
-                    color="red.500"
-                    fontWeight="bold"
-                    ps="3px"
-                    fontSize="md"
-                  >
-                    -14%
-                  </StatHelpText>
+                  {!userStatData && !userStatError
+                    ? <Skeleton height="20px" />
+                    : (
+                      <StatNumber fontSize="lg" color={textColor}>{userStatData['user_stat']['new_pengoo']['value']}</StatNumber>
+                    )}
+                  {!userStatData && !userStatError
+                    ? <Skeleton height="20px" />
+                    : (
+                      <StatHelpText
+                        alignSelf="flex-end"
+                        justifySelf="flex-end"
+                        m="0px"
+                        color={`${userStatData['user_stat']['new_pengoo']['rate'] >= 0 ? "green.400" : "red.400"}`}
+                        fontWeight="bold"
+                        ps="3px"
+                        fontSize="md"
+                      >
+                        {userStatData['user_stat']['new_pengoo']['rate'] >= 0 && "+"}{userStatData['user_stat']['new_pengoo']['rate']}%
+                      </StatHelpText>
+                    )}
                 </Flex>
               </Stat>
               <Spacer />
@@ -184,40 +187,48 @@ export default function Dashboard() {
         <Card minH="83px">
           <CardBody>
             <Flex flexDirection="row" align="center" justify="center" w="100%">
-              <Stat me="auto">
+              <Stat>
                 <StatLabel
                   fontSize="sm"
                   color="gray.400"
                   fontWeight="bold"
                   pb=".1rem"
                 >
-                  Total Sales
+                  New Penger
                 </StatLabel>
                 <Flex>
-                  <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
-                    $173,000
-                  </StatNumber>
-                  <StatHelpText
-                    alignSelf="flex-end"
-                    justifySelf="flex-end"
-                    m="0px"
-                    color="green.400"
-                    fontWeight="bold"
-                    ps="3px"
-                    fontSize="md"
-                  >
-                    +8%
-                  </StatHelpText>
+                  {!userStatData && !userStatError
+                    ? <Skeleton height="20px" />
+                    : (
+                      <StatNumber fontSize="lg" color={textColor}>{userStatData['user_stat']['new_penger']['value']}</StatNumber>
+                    )}
+                  {!userStatData && !userStatError
+                    ? <Skeleton height="20px" />
+                    : (
+                      <StatHelpText
+                        alignSelf="flex-end"
+                        justifySelf="flex-end"
+                        m="0px"
+                        color={`${userStatData['user_stat']['new_penger']['rate'] >= 0 ? "green.400" : "red.400"}`}
+                        fontWeight="bold"
+                        ps="3px"
+                        fontSize="md"
+                      >
+                        {userStatData['user_stat']['new_penger']['rate'] >= 0 && "+"}{userStatData['user_stat']['new_penger']['rate']}%
+                      </StatHelpText>
+                    )}
                 </Flex>
               </Stat>
+              <Spacer />
               <IconBox as="box" h={"45px"} w={"45px"} bg={iconTeal}>
-                <CartIcon h={"24px"} w={"24px"} color={iconBoxInside} />
+                <DocumentIcon h={"24px"} w={"24px"} color={iconBoxInside} />
               </IconBox>
             </Flex>
           </CardBody>
         </Card>
+
       </SimpleGrid>
-      <Grid
+      {/* <Grid
         templateColumns={{ md: "1fr", lg: "1.8fr 1.2fr" }}
         templateRows={{ md: "1fr auto", lg: "1fr" }}
         my="26px"
@@ -316,7 +327,7 @@ export default function Dashboard() {
               position="absolute"
               h="inherit"
               borderRadius="inherit"
-              ref={overlayRef}
+              ref={() => overlayRef}
             ></Box>
             <Portal containerRef={overlayRef}>
               <Flex
@@ -363,8 +374,9 @@ export default function Dashboard() {
             </Portal>
           </CardBody>
         </Card>
-      </Grid>
+      </Grid> */}
       <Grid
+        mt={26}
         templateColumns={{ sm: "1fr", lg: "1.3fr 1.7fr" }}
         templateRows={{ sm: "repeat(2, 1fr)", lg: "1fr" }}
         gap="24px"
@@ -373,8 +385,19 @@ export default function Dashboard() {
         <Card p="16px">
           <CardBody>
             <Flex direction="column" w="100%">
-              <BarChart />
-              <Flex
+              <Card
+                py="1rem"
+                height={{ sm: "300px" }}
+                width="100%"
+                bg="linear-gradient(81.62deg, #313860 2.25%, #151928 79.87%)"
+                position="relative"
+              >
+                {!commissionAndItemData && !commissionAndItemError
+                  ? <Skeleton height="300px" />
+                  : <BarChart data={commissionAndItemData['commission_data']} />
+                }
+              </Card>
+              {/* <Flex
                 direction="column"
                 mt="24px"
                 mb="36px"
@@ -394,8 +417,8 @@ export default function Dashboard() {
                   </Text>{" "}
                   than last week
                 </Text>
-              </Flex>
-              <SimpleGrid gap={{ sm: "12px" }} columns={4}>
+              </Flex> */}
+              <SimpleGrid my="26px" gap={{ sm: "12px" }} columns={2}>
                 <Flex direction="column">
                   <Flex alignItems="center">
                     <IconBox
@@ -405,10 +428,10 @@ export default function Dashboard() {
                       bg={iconTeal}
                       me="6px"
                     >
-                      <WalletIcon h={"15px"} w={"15px"} color={iconBoxInside} />
+                      <CreditIcon h={"15px"} w={"15px"} color={iconBoxInside} />
                     </IconBox>
                     <Text fontSize="sm" color="gray.400" fontWeight="semibold">
-                      Users
+                      Total Commission
                     </Text>
                   </Flex>
                   <Text
@@ -418,76 +441,16 @@ export default function Dashboard() {
                     mb="6px"
                     my="6px"
                   >
-                    32,984
+                    {!commissionAndItemData && !commissionAndItemError
+                      ? <Skeleton height="26px" />
+                      : `${commissionAndItemData['commission_stat']['currency']} ${commissionAndItemData['commission_stat']['value']} `}
                   </Text>
-                  <Progress
-                    colorScheme="teal"
-                    borderRadius="12px"
-                    h="5px"
-                    value={20}
-                  />
-                </Flex>
-                <Flex direction="column">
-                  <Flex alignItems="center">
-                    <IconBox
-                      as="box"
-                      h={"30px"}
-                      w={"30px"}
-                      bg={iconTeal}
-                      me="6px"
-                    >
-                      <RocketIcon h={"15px"} w={"15px"} color={iconBoxInside} />
-                    </IconBox>
-                    <Text fontSize="sm" color="gray.400" fontWeight="semibold">
-                      Clicks
-                    </Text>
-                  </Flex>
-                  <Text
-                    fontSize="lg"
-                    color={textColor}
-                    fontWeight="bold"
-                    mb="6px"
-                    my="6px"
-                  >
-                    2.42m
-                  </Text>
-                  <Progress
-                    colorScheme="teal"
-                    borderRadius="12px"
-                    h="5px"
-                    value={90}
-                  />
-                </Flex>
-                <Flex direction="column">
-                  <Flex alignItems="center">
-                    <IconBox
-                      as="box"
-                      h={"30px"}
-                      w={"30px"}
-                      bg={iconTeal}
-                      me="6px"
-                    >
-                      <CartIcon h={"15px"} w={"15px"} color={iconBoxInside} />
-                    </IconBox>
-                    <Text fontSize="sm" color="gray.400" fontWeight="semibold">
-                      Sales
-                    </Text>
-                  </Flex>
-                  <Text
-                    fontSize="lg"
-                    color={textColor}
-                    fontWeight="bold"
-                    mb="6px"
-                    my="6px"
-                  >
-                    2,400$
-                  </Text>
-                  <Progress
+                  {/* <Progress
                     colorScheme="teal"
                     borderRadius="12px"
                     h="5px"
                     value={30}
-                  />
+                  /> */}
                 </Flex>
                 <Flex direction="column">
                   <Flex alignItems="center">
@@ -501,7 +464,7 @@ export default function Dashboard() {
                       <StatsIcon h={"15px"} w={"15px"} color={iconBoxInside} />
                     </IconBox>
                     <Text fontSize="sm" color="gray.400" fontWeight="semibold">
-                      Items
+                      Total Items
                     </Text>
                   </Flex>
                   <Text
@@ -511,14 +474,16 @@ export default function Dashboard() {
                     mb="6px"
                     my="6px"
                   >
-                    320
+                    {!commissionAndItemData && !commissionAndItemError
+                      ? <Skeleton height="26px" />
+                      : `${commissionAndItemData['item_stat']['value']}`}
                   </Text>
-                  <Progress
+                  {/* <Progress
                     colorScheme="teal"
                     borderRadius="12px"
                     h="5px"
                     value={50}
-                  />
+                  /> */}
                 </Flex>
               </SimpleGrid>
             </Flex>
@@ -528,22 +493,28 @@ export default function Dashboard() {
           <CardHeader mb="20px" pl="22px">
             <Flex direction="column" alignSelf="flex-start">
               <Text fontSize="lg" color={textColor} fontWeight="bold" mb="6px">
-                Sales Overview
+                Booking Overview
               </Text>
-              <Text fontSize="md" fontWeight="medium" color="gray.400">
-                <Text as="span" color="green.400" fontWeight="bold">
-                  (+5%) more
-                </Text>{" "}
-                in 2021
-              </Text>
+              {!bookingGraphData && !bookingGraphError ?
+                <Skeleton height="10px" />
+                : <Text fontSize="md" fontWeight="medium" color="gray.400">
+                  <Text as="span" color="green.400" fontWeight="bold">
+                    ({bookingGraphData['rate'] >= 0 && "+"}{bookingGraphData['rate']}%)
+                  </Text>{" "}
+                  in 2021
+                </Text>
+              }
             </Flex>
           </CardHeader>
           <Box w="100%" h={{ sm: "300px" }} ps="8px">
-            <LineChart />
+            {!bookingGraphData && !bookingGraphError ?
+              <Skeleton height="10px" />
+              : <LineChart data={bookingGraphData['booking_data']} />
+            }
           </Box>
         </Card>
       </Grid>
-      <Grid
+      {/* <Grid
         templateColumns={{ sm: "1fr", md: "1fr 1fr", lg: "2fr 1fr" }}
         templateRows={{ sm: "1fr auto", md: "1fr", lg: "1fr" }}
         gap="24px"
@@ -557,7 +528,7 @@ export default function Dashboard() {
                 fontWeight="bold"
                 pb=".5rem"
               >
-                Projects
+                New Penger Partner
               </Text>
               <Flex align="center">
                 <Icon
@@ -638,7 +609,7 @@ export default function Dashboard() {
             </Flex>
           </CardBody>
         </Card>
-      </Grid>
+      </Grid> */}
     </Flex>
   );
 }
